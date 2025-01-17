@@ -2,15 +2,18 @@ package org.sp.admin.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vladmihalcea.hibernate.type.array.LongArrayType;
+import com.vladmihalcea.hibernate.type.array.StringArrayType;
 import jakarta.persistence.*;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.*;
 import org.sp.admin.enums.StatusEnum;
+import org.sp.admin.utils.SnowflakeId;
 
 import java.util.Date;
+
 
 @Data
 @Entity
@@ -25,8 +28,7 @@ public class UserModel {
 
     @Id
     @GeneratedValue(generator = "snowFlakeId")
-    @GenericGenerator(name = "snowFlakeId", strategy = "org.sp.admin.utils.SnowflakeId")
-    @Column(name = "id")
+    @GenericGenerator(name = "snowFlakeId", type = SnowflakeId.class)
     private Long id;
 
     @NotNull
@@ -50,6 +52,12 @@ public class UserModel {
     private String email;// 邮箱
 
     private String phone;// 电话
+
+
+    // @see https://www.baeldung.com/java-hibernate-map-postgresql-array
+    @Type(value = LongArrayType.class)
+    @Column(columnDefinition = "int8[]")
+    private Long[] roles;
 
 
     @NotNull

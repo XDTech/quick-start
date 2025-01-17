@@ -27,6 +27,8 @@ public class UserVal {
 
     private String email;// 邮箱
 
+    private Long[] roles;
+
     private String phone;// 电话
 
     public interface Create extends Default {
