@@ -27,7 +27,6 @@ public class RoleModel implements Serializable {
     @Id
     @GeneratedValue(generator = "snowFlakeId")
     @GenericGenerator(name = "snowFlakeId", type = SnowflakeId.class)
-    @Column(name = "id")
     private long id;
 
     @NotBlank

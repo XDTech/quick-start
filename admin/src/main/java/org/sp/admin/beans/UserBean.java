@@ -30,10 +30,8 @@ public class UserBean implements Serializable {
 
     private String username;
 
-    private String role;
+    private Long[] roles;
 
-    private Integer tenantCode;//
-    private Long tenantId;//
 
 
 

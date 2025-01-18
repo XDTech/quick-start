@@ -72,7 +72,10 @@ public class UserController {
         if (mUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("数据不存在");
         }
-        return ResponseEntity.ok(ResponseBean.createResponseBean(ResponseEnum.Success.getCode(), mUser.get(), ResponseEnum.Success.getMsg()));
+
+        UserBean userBean=new UserBean();
+        BeanUtil.copyProperties(mUser.get(),userBean);
+        return ResponseEntity.ok(ResponseBean.success(userBean));
 
     }
 
