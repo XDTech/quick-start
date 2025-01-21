@@ -19,8 +19,8 @@ import { openWindow } from '@vben/utils';
 
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
-import LoginForm from '#/views/_core/authentication/login.vue';
 import { useWebSocketStore } from '#/store/websocket';
+import LoginForm from '#/views/_core/authentication/login.vue';
 
 const notifications = ref<NotificationItem[]>([
   {
@@ -132,7 +132,6 @@ watch(latestMessage, (msg: MessageEvent) => {
 
   if (info) {
     // const data: SocketMsgBean = JSON.parse(info);
-
     // procressSocketMsg(data);
   }
 });
