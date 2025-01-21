@@ -9,6 +9,7 @@ import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import org.sp.admin.beans.SocketMsgBean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 @Component
 @ServerEndpoint("/websocket/{token}")
+@EnableWebSocket
 public class WebSocketServer {
 
     /**

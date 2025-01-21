@@ -1,6 +1,7 @@
 package org.sp.admin.utils;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class BaseUtil {
         long decimal = Long.parseLong(hexStr);
 
         // 将整数转换为十六进制字符串
-        String ssrc= Long.toHexString(decimal).toUpperCase();
+        String ssrc = Long.toHexString(decimal).toUpperCase();
 
         if (ssrc.length() != 8) {
             ssrc = "0" + ssrc;
@@ -51,13 +52,18 @@ public class BaseUtil {
     // A1A2 to 123
     public static String hex2ssrc(String hexString) {
         // 转换为10进制字符串
-      String ssrc=   Convert.toStr(Long.parseLong(hexString, 16));
+        String ssrc = Convert.toStr(Long.parseLong(hexString, 16));
 
         if (ssrc.length() != 10) {
             ssrc = "0" + ssrc;
         }
         return ssrc;
 
+    }
+
+    public static String genDeleteName(String name) {
+
+        return StrUtil.format("{}_{}", name, DateTime.now().getTime());
     }
 }
 

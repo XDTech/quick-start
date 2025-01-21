@@ -20,7 +20,7 @@ import java.util.Date;
 @Table(name = "user", schema = "public")
 //, uniqueConstraints = @UniqueConstraint(name = "unique_username_status", columnNames = {"username", "status"}), indexes = {@Index(name = "idx_status", columnList = "status")}
 // 1.表名 2.模式
-//@SQLDelete(sql = "update \"user\"  set deleted = true where id = ?")
+@SQLDelete(sql = "update \"user\"  set deleted = true where id = ?")
 //@Where(clause = "deleted != true")
 @DynamicInsert
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // 忽略  lazy 层级/为空 时候的引用
@@ -52,6 +52,8 @@ public class UserModel {
     private String email;// 邮箱
 
     private String phone;// 电话
+
+    private Long departmentId;
 
 
     // @see https://www.baeldung.com/java-hibernate-map-postgresql-array

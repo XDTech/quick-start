@@ -10,6 +10,7 @@ import jakarta.persistence.criteria.Root;
 import org.sp.admin.enums.StatusEnum;
 import org.sp.admin.model.user.UserModel;
 import org.sp.admin.repository.user.UserRepo;
+import org.sp.admin.utils.BaseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,7 +55,7 @@ public class UserService {
 
     @Transactional
     public void deleteMUser(UserModel mUser) {
-        mUser.setUsername(StrUtil.format("{}={}", mUser.getUsername(), DateTime.now().getTime()));
+        mUser.setUsername(BaseUtil.genDeleteName(mUser.getUsername()));
         mUser.setDeleted(true);
         this.userRepo.save(mUser);
     }

@@ -34,7 +34,7 @@ public class UserController {
     /**
      * 服务对象
      */
-    @Autowired
+    @Resource
     private UserService mUserService;
 
     @Resource
