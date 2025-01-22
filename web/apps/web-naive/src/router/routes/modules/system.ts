@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: '角色管理',
         path: '/system/role',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
+        component: () => import('#/views/system/role/index.vue'),
         meta: {
           icon: 'carbon:user-role',
           title: '角色管理',

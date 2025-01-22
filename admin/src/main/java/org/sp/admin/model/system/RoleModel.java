@@ -50,6 +50,10 @@ public class RoleModel implements Serializable {
     @UpdateTimestamp
     private Date updatedAt;
 
+    @Column(columnDefinition = "text default ''")
+    private String remarks;
+
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(20) default 'normal'")
     private StatusEnum status = StatusEnum.normal;// 状态

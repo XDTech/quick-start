@@ -1,85 +1,21 @@
-# Markdown Extension Examples
+### Spring boot3 快速搭建
 
-This page demonstrates some of the built-in markdown extensions provided by VitePress.
+#### 代码生成
 
-## Syntax Highlighting
+1. 安装EasyCode 插件
+2. 导入[EasyCodeConfig.json](EasyCodeConfig.json)
+3. Database连接到数据库
+4. 表结构右键EasyCode生成即可
 
-VitePress provides Syntax Highlighting powered by [Shiki](https://github.com/shikijs/shiki), with additional features like line-highlighting:
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
 
-**Input**
+#### IDEA 配置安装lombok
 
-````md
-```js{4}
-export default {
-  data () {
-    return {
-      msg: 'Highlighted!'
-    }
-  }
-}
-```
-````
+1. 安装lombok插件
 
-**Output**
+![img.png](img.png)
 
-```js{4}
-export default {
-  data () {
-    return {
-      msg: 'Highlighted!'
-    }
-  }
-}
-```
+2. 开启配置 两行都需要开启
 
-## Custom Containers
-
-**Input**
-
-```md
-::: info
-This is an info box.
-:::
-
-::: tip
-This is a tip.
-:::
-
-::: warning
-This is a warning.
-:::
-
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
-```
-
-**Output**
-
-::: info
-This is an info box.
-:::
-
-::: tip
-This is a tip.
-:::
-
-::: warning
-This is a warning.
-:::
-
-::: danger
-This is a dangerous warning.
-:::
-
-::: details
-This is a details block.
-:::
-
-## More
-
-Check out the documentation for the [full list of markdown extensions](https://vitepress.dev/guide/markdown).
+![img_1.png](img_1.png)

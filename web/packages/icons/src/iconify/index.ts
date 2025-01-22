@@ -22,6 +22,11 @@ export const MdiWebSync = createIconifyIcon('mdi:web-sync');
 export const MdiMonitorEye = createIconifyIcon('mdi:monitor-eye');
 export const MdiRestart = createIconifyIcon('mdi:restart');
 export const MsPlay = createIconifyIcon('material-symbols:motion-play-outline');
+export const MsFolder = createIconifyIcon('material-symbols:folder');
+export const ShieldIcon = createIconifyIcon('solar:shield-linear');
+export const MsFolderExpand = createIconifyIcon(
+  'material-symbols:folder-copy-outline',
+);
 export const Mscopy = createIconifyIcon(
   'material-symbols-light:content-copy-outline',
 );

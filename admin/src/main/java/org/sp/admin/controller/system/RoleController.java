@@ -1,10 +1,12 @@
 package org.sp.admin.controller.system;
 
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import org.sp.admin.beans.system.RoleBean;
 
 import org.sp.admin.model.system.RoleModel;
+import org.sp.admin.model.system.RolePermissionModel;
 import org.sp.admin.service.system.RoleService;
 import org.sp.admin.utils.BeanConverterUtil;
 import org.sp.admin.validation.RoleVal;
@@ -16,6 +18,7 @@ import cn.hutool.core.bean.BeanUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 
@@ -43,10 +46,10 @@ public class RoleController {
      * @return 查询结果
      */
     @GetMapping("/page/list")
-    public ResponseEntity<?> getRolePageList(@RequestParam Integer pi, @RequestParam Integer ps) {
+    public ResponseEntity<?> getRolePageList(@RequestParam Integer pi, @RequestParam Integer ps, @RequestParam(required = false) String name) {
 
 
-        Page<RoleModel> roleList = this.roleService.getRolePageList(pi, ps);
+        Page<RoleModel> roleList = this.roleService.getRolePageList(pi, ps,name);
 
 
         List<RoleBean> roleBeans = BeanConverterUtil.convertList(roleList.getContent(), RoleBean.class);
@@ -75,6 +78,11 @@ public class RoleController {
 
         BeanUtil.copyProperties(roleModel.get(), roleBean);
 
+        List<RolePermissionModel> rolePermissions = this.roleService.getRolePermissions(id);
+        Object[] array = rolePermissions.stream().map(RolePermissionModel::getPermissionId).toArray();
+
+        roleBean.setPermissions(Convert.toLongArray(array));
+
         return ResponseEntity.ok(ResponseBean.success(roleBean));
 
     }
@@ -95,17 +103,10 @@ public class RoleController {
         }
 
 
-        RoleModel roleModel = new RoleModel();
-        BeanUtil.copyProperties(roleVal, roleModel);
-
-        this.roleService.createRole(roleModel);
+        this.roleService.createRole(roleVal);
 
 
-        RoleBean roleBean = new RoleBean();
-
-        BeanUtil.copyProperties(roleBean, roleBean);
-
-        return ResponseEntity.ok(ResponseBean.success(roleBean));
+        return ResponseEntity.ok(ResponseBean.success());
     }
 
     /**
@@ -129,13 +130,13 @@ public class RoleController {
 
 
         RoleModel roleModel = roleOptional.get();
-        BeanUtil.copyProperties(roleVal, roleModel, "createdAt", "updatedAt", "status", "deleted");
+        BeanUtil.copyProperties(roleVal, roleModel, "createdAt", "updatedAt",  "deleted");
 
-        this.roleService.updateRole(roleModel);
+        this.roleService.updateRole(roleModel, roleVal.getPermissionIds());
 
         RoleBean roleBean = new RoleBean();
 
-        BeanUtil.copyProperties(roleBean, roleBean);
+        BeanUtil.copyProperties(roleModel, roleBean);
 
         return ResponseEntity.ok(ResponseBean.success(roleBean));
     }

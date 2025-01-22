@@ -6,6 +6,8 @@ import lombok.Data;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.groups.Default;
+import org.sp.admin.enums.StatusEnum;
+import org.sp.admin.validation.validator.EnumValidatorInterface;
 
 /**
  * (Role)表验证类
@@ -31,6 +33,14 @@ public class RoleVal {
 
     private Integer sort;
 
+    private String remarks;
+
+    private Long[] permissionIds;
+
+
+    @NotBlank(message = "status is required")
+    @EnumValidatorInterface(enumClass = StatusEnum.class, message = "Invalid status type")
+    private String status;
 
     public interface Create extends Default {
 

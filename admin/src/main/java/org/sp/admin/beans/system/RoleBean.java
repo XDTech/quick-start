@@ -3,6 +3,7 @@ package org.sp.admin.beans.system;
 import java.util.Date;
 
 import lombok.Data;
+import org.sp.admin.enums.StatusEnum;
 
 /**
  * (Role)表实体类
@@ -21,6 +22,12 @@ public class RoleBean {
     private String name;
 
     private Integer sort;
+
+    private Long[] permissions;
+
+    private String remarks;
+
+    private StatusEnum status;
 
 
 }

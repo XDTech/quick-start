@@ -16,8 +16,7 @@ setupVbenForm<ComponentType>({
     modelPropNameMap: {
       Checkbox: 'checked',
       Radio: 'checked',
-      Upload: 'fileList'
-
+      Upload: 'fileList',
     },
   },
   defineRules: {
