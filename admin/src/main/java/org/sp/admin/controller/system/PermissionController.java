@@ -8,7 +8,7 @@ import org.sp.admin.beans.system.PermissionBean;
 import org.sp.admin.model.system.PermissionModel;
 import org.sp.admin.service.system.PermissionService;
 import org.sp.admin.utils.BeanConverterUtil;
-import org.sp.admin.validation.PermissionVal;
+import org.sp.admin.validation.system.PermissionVal;
 import org.sp.admin.beans.ResponseBean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;

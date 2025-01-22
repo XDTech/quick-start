@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: BasicLayout,
     meta: {
-      icon: 'lucide:layout-dashboard',
+      icon: 'material-symbols:settings-outline-rounded',
       order: 1,
       title: '系统设置',
     },
@@ -43,7 +43,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: '部门管理',
         path: '/system/department',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
+        component: () => import('#/views/system/department/index.vue'),
         meta: {
           icon: 'clarity:organization-line',
           title: '部门管理',

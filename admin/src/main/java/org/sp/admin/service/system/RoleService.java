@@ -7,7 +7,7 @@ import org.sp.admin.model.system.RolePermissionModel;
 import org.sp.admin.repository.system.RolePermissionRepo;
 import org.sp.admin.repository.system.RoleRepo;
 import org.sp.admin.utils.BaseUtil;
-import org.sp.admin.validation.RoleVal;
+import org.sp.admin.validation.system.RoleVal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

@@ -9,7 +9,7 @@ import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.system.RolePermissionModel;
 import org.sp.admin.service.system.RoleService;
 import org.sp.admin.utils.BeanConverterUtil;
-import org.sp.admin.validation.RoleVal;
+import org.sp.admin.validation.system.RoleVal;
 import org.sp.admin.beans.ResponseBean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,6 @@ import cn.hutool.core.bean.BeanUtil;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.validation.annotation.Validated;
 
