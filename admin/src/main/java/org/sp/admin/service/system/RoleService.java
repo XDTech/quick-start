@@ -2,6 +2,7 @@ package org.sp.admin.service.system;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import org.sp.admin.model.system.PermissionModel;
 import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.system.RolePermissionModel;
 import org.sp.admin.repository.system.RolePermissionRepo;
@@ -38,7 +39,6 @@ public class RoleService {
 
     @Resource
     private RolePermissionRepo rolePermissionRepo;
-
 
 
     public List<RolePermissionModel> getRolePermissions(Long roleId) {
@@ -118,14 +118,26 @@ public class RoleService {
     }
 
     // 分页查询
-    public Page<RoleModel> getRolePageList(Integer pi, Integer ps,String name) {
+    public Page<RoleModel> getRolePageList(Integer pi, Integer ps, String name) {
         // Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         PageRequest pageRequest = PageRequest.of(pi - 1, ps);
-        Specification<RoleModel> specification = (Root<RoleModel> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
+        Specification<RoleModel> specification = this.genSpecification(name);
+        return this.roleRepo.findAll(specification, pageRequest);
+
+    }
+    public List<RoleModel> getRoleList(String name) {
+
+        Specification<RoleModel> specification = this.genSpecification(name);
+        return this.roleRepo.findAll(specification);
+
+    }
+
+
+    private Specification<RoleModel> genSpecification(String name) {
+        return (Root<RoleModel> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             /**
              *
              */
-
 
             // 用于暂时存放查询条件的集合
             List<Predicate> predicatesList = new ArrayList<>();
@@ -144,6 +156,7 @@ public class RoleService {
              }
              **/
             predicatesList.add(cb.equal(root.get("deleted"), false));// 查询没有删除的
+            predicatesList.add(cb.notEqual(root.get("identity"), "root"));
             Predicate[] p = new Predicate[predicatesList.size()];
             query.where(predicatesList.toArray(p));
             query.orderBy(cb.desc(root.get("createdAt")));
@@ -151,7 +164,5 @@ public class RoleService {
             return query.getGroupRestriction();
 
         };
-        return this.roleRepo.findAll(specification, pageRequest);
-
     }
 }

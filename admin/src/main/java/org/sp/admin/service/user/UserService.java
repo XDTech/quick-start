@@ -11,6 +11,7 @@ import org.sp.admin.enums.StatusEnum;
 import org.sp.admin.model.user.UserModel;
 import org.sp.admin.repository.user.UserRepo;
 import org.sp.admin.utils.BaseUtil;
+import org.sp.admin.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +37,7 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
-
+    private final SecurityUtils securityUtils = new SecurityUtils();
     // 查询账户是否存在
 
     public UserModel getUser(String username) {
@@ -66,7 +67,7 @@ public class UserService {
     }
 
     // 分页查询
-    public Page<UserModel> getMUserPageList(Integer pi, Integer ps) {
+    public Page<UserModel> getMUserPageList(Integer pi, Integer ps, String name) {
         // Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         PageRequest pageRequest = PageRequest.of(pi - 1, ps);
         Specification<UserModel> specification = (Root<UserModel> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
@@ -74,6 +75,9 @@ public class UserService {
             List<Predicate> predicatesList = new ArrayList<>();
             // --------------------------------------------
             // 模糊查询
+            if (!StrUtil.isEmpty(name)) {
+                predicatesList.add(cb.like(root.get("name"), "%" + name + "%"));
+            }
             /**
              if (!StrUtil.isEmpty(username)) {
              predicatesList.add(cb.like(root.get("username"), "%" + username + "%"));
@@ -84,6 +88,7 @@ public class UserService {
              **/
 
             predicatesList.add(cb.equal(root.get("deleted"), false));// 查询没有删除的
+            predicatesList.add(cb.notEqual(root.get("username"), "root"));
             Predicate[] p = new Predicate[predicatesList.size()];
             query.where(predicatesList.toArray(p));
             query.orderBy(cb.desc(root.get("createdAt")));
@@ -93,5 +98,19 @@ public class UserService {
         };
         return this.userRepo.findAll(specification, pageRequest);
 
+    }
+
+    public UserModel genPwd(UserModel userModel, String newPassword) {
+        // 生成加密盐
+        String salt = this.securityUtils.createSecuritySalt();
+
+        userModel.setSalt(salt);
+        // 生成密码
+
+        String pwd = this.securityUtils.shaEncode(newPassword + salt);
+
+        userModel.setPassword(pwd);
+
+        return userModel;
     }
 }

@@ -34,6 +34,11 @@ export const Mscopy = createIconifyIcon(
 export const antdSync = createIconifyIcon('ant-design:cloud-sync-outlined');
 export const antdEdit = createIconifyIcon('ant-design:edit-outlined');
 export const antdDelete = createIconifyIcon('ant-design:delete-outlined');
+export const userPwd = createIconifyIcon('tdesign:user-password');
+export const accountEdit = createIconifyIcon('mdi:account-edit-outline');
+export const userEdit = createIconifyIcon(
+  'material-symbols:deployed-code-account-outline-sharp',
+);
 export const antdDisconnect = createIconifyIcon(
   'ant-design:disconnect-outlined',
 );

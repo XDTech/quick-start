@@ -133,7 +133,7 @@ const [permissionModal, permissionModalAPI] = useVbenModal({
   },
 });
 function addItem() {
-  permissionModalAPI.setState({ title: '添加菜单权限' });
+  permissionModalAPI.setState({ title: '添加部门' });
 
   permissionModalAPI.setData({ operator: 'add' });
   permissionModalAPI.open();

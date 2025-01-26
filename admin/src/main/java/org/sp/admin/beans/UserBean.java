@@ -3,6 +3,8 @@ package org.sp.admin.beans;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * (MUser)表实体类
@@ -32,8 +34,15 @@ public class UserBean implements Serializable {
 
     private Long[] roles;
 
+    private List<String> roleNames = new ArrayList<>();
 
+    private Long departmentId;
 
+    private String departmentName;
+
+    private String status;
+
+    private String postName;
 
 
 }

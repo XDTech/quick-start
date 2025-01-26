@@ -7,6 +7,10 @@ export async function getRolePageList(form: any) {
   return requestClient.get('/role/page/list', { params: form });
 }
 
+export async function getRoleList(form: any) {
+  return requestClient.get('/role/list', { params: form });
+}
+
 export async function deleteRole(id: string) {
   return requestClient.delete(`/role/${id}`);
 }

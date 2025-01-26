@@ -14,15 +14,6 @@ const routes: RouteRecordRaw[] = [
     path: '/system',
     children: [
       {
-        name: '用户管理',
-        path: '/system/user',
-        component: () => import('#/views/dashboard/analytics/index.vue'),
-        meta: {
-          icon: 'lucide:users-round',
-          title: '用户管理',
-        },
-      },
-      {
         name: '菜单权限',
         path: '/system/permission',
         component: () => import('#/views/system/permission/index.vue'),
@@ -47,6 +38,15 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'clarity:organization-line',
           title: '部门管理',
+        },
+      },
+      {
+        name: '用户管理',
+        path: '/system/user',
+        component: () => import('#/views/system/user/index.vue'),
+        meta: {
+          icon: 'lucide:users-round',
+          title: '用户管理',
         },
       },
     ],

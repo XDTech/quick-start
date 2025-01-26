@@ -1,14 +1,21 @@
 package org.sp.admin.controller.user;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.log.StaticLog;
 import jakarta.annotation.Resource;
 import org.sp.admin.beans.ResponseBean;
 import org.sp.admin.beans.UserBean;
 import org.sp.admin.enums.ResponseEnum;
+import org.sp.admin.enums.StatusEnum;
+import org.sp.admin.model.system.DepartmentModel;
+import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.user.UserModel;
 import org.sp.admin.security.UserSecurity;
+import org.sp.admin.service.system.DepartmentService;
+import org.sp.admin.service.system.RoleService;
 import org.sp.admin.service.user.UserService;
+import org.sp.admin.utils.BeanConverterUtil;
 import org.sp.admin.utils.SecurityUtils;
 import org.sp.admin.validation.user.UserVal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +26,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * (UserModel)表控制层
@@ -41,6 +51,12 @@ public class UserController {
     private UserSecurity userSecurity;
 
 
+    @Resource
+    private DepartmentService departmentService;
+
+    @Resource
+    private RoleService roleService;
+
     private final SecurityUtils securityUtils = new SecurityUtils();
 
     /**
@@ -49,12 +65,45 @@ public class UserController {
      * @return 查询结果
      */
     @GetMapping("/page/list")
-    public ResponseEntity<?> getMUserPageList(@RequestParam Integer pi, @RequestParam Integer ps) {
+    public ResponseEntity<?> getMUserPageList(@RequestParam Integer pi, @RequestParam Integer ps, @RequestParam(required = false) String name) {
 
 
-        Page<UserModel> mUserList = this.mUserService.getMUserPageList(pi, ps);
+        Page<UserModel> mUserList = this.mUserService.getMUserPageList(pi, ps, name);
 
-        return ResponseEntity.ok(ResponseBean.createResponseBean(ResponseEnum.Success.getCode(), mUserList.getTotalElements(), mUserList.getContent(), ResponseEnum.Success.getMsg()));
+
+        List<DepartmentModel> departmentList = this.departmentService.getDepartmentList(null);
+
+        Map<Long, DepartmentModel> departmentModelMap = departmentList.stream().collect(Collectors.toMap(DepartmentModel::getId, s -> s));
+
+
+        List<RoleModel> roleList = this.roleService.getRoleList(null);
+
+        Map<Long, RoleModel> roleModelMap = roleList.stream().collect(Collectors.toMap(RoleModel::getId, s -> s));
+
+
+        List<UserBean> userBeans = BeanConverterUtil.convertList(mUserList.getContent(), UserBean.class);
+
+
+        for (UserBean userBean : userBeans) {
+            DepartmentModel departmentModel = departmentModelMap.get(userBean.getDepartmentId());
+            if (ObjectUtil.isNotEmpty(departmentModel)) {
+                userBean.setDepartmentName(departmentModel.getName());
+            }
+
+            // 加载角色
+
+            if (userBean.getRoles() == null) continue;
+            for (Long role : userBean.getRoles()) {
+                RoleModel roleModel = roleModelMap.get(role);
+
+                if (ObjectUtil.isNotEmpty(roleModel)) {
+                    userBean.getRoleNames().add(roleModel.getName());
+                }
+
+            }
+
+        }
+        return ResponseEntity.ok(ResponseBean.success(mUserList.getTotalElements(), userBeans));
 
 
     }
@@ -73,8 +122,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("数据不存在");
         }
 
-        UserBean userBean=new UserBean();
-        BeanUtil.copyProperties(mUser.get(),userBean);
+        UserBean userBean = new UserBean();
+        BeanUtil.copyProperties(mUser.get(), userBean);
         return ResponseEntity.ok(ResponseBean.success(userBean));
 
     }
@@ -90,7 +139,7 @@ public class UserController {
 
         StaticLog.info("{}", userBean.toString());
 
-        UserModel user = this.mUserService.getUser(userBean.getUsername());
+        UserModel user = this.mUserService.getUser(userBean.getUsername().trim());
         if (user != null) {
             return ResponseEntity.ok(ResponseBean.fail("用户已存在"));
         }
@@ -128,14 +177,21 @@ public class UserController {
 
         Optional<UserModel> mUserOptional = this.mUserService.getMUser(userBean.getId());
         if (mUserOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("数据不存在");
+            return ResponseEntity.ok(ResponseBean.fail());
         }
 
         UserModel mUser = mUserOptional.get();
-        BeanUtil.copyProperties(userBean, mUser, "createdAt", "updatedAt", "status", "deleted");
+        mUser.setAvatar(userBean.getAvatar());
+        mUser.setDepartmentId(userBean.getDepartmentId());
+        mUser.setEmail(userBean.getEmail());
+        mUser.setName(userBean.getName());
+        mUser.setPhone(userBean.getPhone());
+        mUser.setPostName(userBean.getPostName());
+        mUser.setRoles(userBean.getRoles());
+        mUser.setStatus(StatusEnum.valueOf(userBean.getStatus()));
+        this.mUserService.updateMUser(mUser);
 
-
-        return ResponseEntity.ok(this.mUserService.updateMUser(mUser));
+        return ResponseEntity.ok(ResponseBean.success());
     }
 
     /**
@@ -149,7 +205,7 @@ public class UserController {
 
         Optional<UserModel> mUser = this.mUserService.getMUser(id);
         if (mUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("数据不存在");
+            return ResponseEntity.ok(ResponseBean.fail("用户不存在"));
         }
 
         this.mUserService.deleteMUser(mUser.get());
@@ -174,6 +230,47 @@ public class UserController {
 
         return ResponseEntity.ok(ResponseBean.success(userBean));
     }
+
+
+    // 修改指定账号的username
+    @PutMapping("/account")
+    public ResponseEntity<?> updateAccount(@RequestParam Long id, @RequestParam String username) {
+
+
+        Optional<UserModel> mUser = this.mUserService.getMUser(id);
+
+        if (mUser.isEmpty()) return ResponseEntity.ok(ResponseBean.fail("账户不存在"));
+
+
+        // 查询账号是否存在
+        UserModel user = this.mUserService.getUser(username.trim());
+
+        if (ObjectUtil.isNotEmpty(user) && !user.getId().equals(mUser.get().getId())) {
+            return ResponseEntity.ok(ResponseBean.fail("账户已存在"));
+        }
+
+
+        mUser.get().setUsername(username);
+        this.mUserService.updateMUser(mUser.get());
+
+        return ResponseEntity.ok(ResponseBean.success());
+    }
+
+
+    @PutMapping("/pwd")
+    public ResponseEntity<?> updatePwd(@RequestParam Long id, @RequestParam String pwd) {
+
+
+        Optional<UserModel> mUser = this.mUserService.getMUser(id);
+
+        if (mUser.isEmpty()) return ResponseEntity.ok(ResponseBean.fail("账户不存在"));
+
+
+        this.mUserService.updateMUser(this.mUserService.genPwd(mUser.get(), pwd));
+
+        return ResponseEntity.ok(ResponseBean.success());
+    }
+
 
 }
 

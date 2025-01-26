@@ -48,13 +48,28 @@ public class RoleController {
     public ResponseEntity<?> getRolePageList(@RequestParam Integer pi, @RequestParam Integer ps, @RequestParam(required = false) String name) {
 
 
-        Page<RoleModel> roleList = this.roleService.getRolePageList(pi, ps,name);
+        Page<RoleModel> roleList = this.roleService.getRolePageList(pi, ps, name);
 
 
         List<RoleBean> roleBeans = BeanConverterUtil.convertList(roleList.getContent(), RoleBean.class);
 
 
         return ResponseEntity.ok(ResponseBean.success(roleList.getTotalElements(), roleBeans));
+
+
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> getRoleList() {
+
+
+        List<RoleModel> roleList = this.roleService.getRoleList(null);
+
+
+        List<RoleBean> roleBeans = BeanConverterUtil.convertList(roleList, RoleBean.class);
+
+
+        return ResponseEntity.ok(ResponseBean.success(roleBeans));
 
 
     }
@@ -129,7 +144,7 @@ public class RoleController {
 
 
         RoleModel roleModel = roleOptional.get();
-        BeanUtil.copyProperties(roleVal, roleModel, "createdAt", "updatedAt",  "deleted");
+        BeanUtil.copyProperties(roleVal, roleModel, "createdAt", "updatedAt", "deleted");
 
         this.roleService.updateRole(roleModel, roleVal.getPermissionIds());
 

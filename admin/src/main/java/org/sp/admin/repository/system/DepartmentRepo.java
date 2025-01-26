@@ -3,6 +3,7 @@ package org.sp.admin.repository.system;
 import org.sp.admin.model.system.DepartmentModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,23 @@ import java.util.List;
 @Repository
 public interface DepartmentRepo extends JpaRepository<DepartmentModel, Long>, JpaSpecificationExecutor<DepartmentModel> {
 
+
+    /**
+     * 递归查询
+     * @param id
+     * @return
+     */
+    @Query(value = """
+            WITH RECURSIVE department_tree AS (
+                SELECT d.id, d.name, d.parent_id
+                FROM department d
+                WHERE d.id = ?1
+                UNION ALL
+                SELECT d.id, d.name, d.parent_id
+                FROM department d
+                INNER JOIN department_tree dt ON d.parent_id = dt.id
+            )
+            SELECT * FROM department_tree
+            """, nativeQuery = true)
+    List<DepartmentModel> findAllSubDepartments(Long id);
 }

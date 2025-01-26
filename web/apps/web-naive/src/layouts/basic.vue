@@ -20,6 +20,7 @@ import { openWindow } from '@vben/utils';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import { useWebSocketStore } from '#/store/websocket';
+import { getBaseUrl } from '#/utils/base';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
 const notifications = ref<NotificationItem[]>([
@@ -92,7 +93,9 @@ const menus = computed(() => [
 ]);
 
 const avatar = computed(() => {
-  return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
+  return userStore.userInfo?.avatar
+    ? `${getBaseUrl}file/download?path=${userStore.userInfo?.avatar}`
+    : preferences.app.defaultAvatar;
 });
 
 async function handleLogout() {
@@ -142,9 +145,9 @@ watch(latestMessage, (msg: MessageEvent) => {
     <template #user-dropdown>
       <UserDropdown
         :avatar
+        :description="userStore.userInfo?.email"
         :menus
-        :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
+        :text="userStore.userInfo?.name"
         tag-text="Pro"
         @logout="handleLogout"
       />

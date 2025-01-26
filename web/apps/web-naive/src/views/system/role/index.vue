@@ -3,7 +3,7 @@
 import { Page, useVbenModal, type VbenFormProps } from '@vben/common-ui';
 import { antdDelete, antdEdit, MdiPlus } from '@vben/icons';
 
-import { NButton, NPopconfirm, NPopover, NTag, NText } from 'naive-ui';
+import { NButton, NPopconfirm, NTag, NText } from 'naive-ui';
 
 import { message } from '#/adapter/naive';
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
@@ -156,16 +156,11 @@ async function deleteItem(id: string) {
   <Page auto-content-height>
     <Grid table-title="角色列表">
       <template #toolbar-tools>
-        <NPopover trigger="hover">
-          <template #trigger>
-            <NButton circle @click="add">
-              <template #icon>
-                <MdiPlus />
-              </template>
-            </NButton>
+        <NButton circle @click="add">
+          <template #icon>
+            <MdiPlus />
           </template>
-          添加拉流代理
-        </NPopover>
+        </NButton>
       </template>
 
       <template #name="{ row }">
