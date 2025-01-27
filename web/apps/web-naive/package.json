@@ -26,6 +26,7 @@
     "#/*": "./src/*"
   },
   "dependencies": {
+    "@types/numeral": "^2.0.5",
     "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
@@ -42,6 +43,7 @@
     "@vben/utils": "workspace:*",
     "@vueuse/core": "catalog:",
     "naive-ui": "catalog:",
+    "numeral": "^2.0.6",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-hooks-plus": "^2.2.1",
