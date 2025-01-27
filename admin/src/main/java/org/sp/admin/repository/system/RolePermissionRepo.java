@@ -22,4 +22,7 @@ public interface RolePermissionRepo extends JpaRepository<RolePermissionModel, L
 
     List<RolePermissionModel> findByRoleId(Long roleId);
 
+
+
+
 }

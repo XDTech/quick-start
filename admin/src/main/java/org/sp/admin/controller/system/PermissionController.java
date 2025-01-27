@@ -1,11 +1,13 @@
 package org.sp.admin.controller.system;
 
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import org.sp.admin.beans.system.PermissionBean;
 
 import org.sp.admin.model.system.PermissionModel;
+import org.sp.admin.security.StpKit;
 import org.sp.admin.service.system.PermissionService;
 import org.sp.admin.utils.BeanConverterUtil;
 import org.sp.admin.validation.system.PermissionVal;
@@ -28,6 +30,8 @@ import jakarta.annotation.Resource;
  * @author Tobin
  * @since 2025-01-20 10:12:44
  */
+
+@SaCheckRole(value = "root", type = StpKit.USER_KEY)
 @RestController
 @RequestMapping("/permission")
 @Validated  //单参数校验时我们需要，在方法的类上加上@Validated注解，否则校验不生效。
@@ -43,6 +47,7 @@ public class PermissionController {
      *
      * @return 查询结果
      */
+
     @GetMapping("/page/list")
     public ResponseEntity<?> getPermissionPageList(@RequestParam Integer pi, @RequestParam Integer ps, @RequestParam(required = false) String name) {
 
@@ -57,6 +62,7 @@ public class PermissionController {
 
 
     }
+
 
     @GetMapping("/list")
     public ResponseEntity<?> getPermissionList(@RequestParam(required = false) String name) {

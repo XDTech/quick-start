@@ -131,6 +131,18 @@ public class RoleService {
         return this.roleRepo.findAll(specification);
 
     }
+    public List<RoleModel> getRoleListIn(Long[] roleIds) {
+
+        return this.roleRepo.findByIdIn(roleIds);
+
+    }
+
+
+    public List<RoleModel> getRoleList(){
+
+        // 查询没有删除的角色
+       return this.roleRepo.findByDeleted(false);
+    }
 
 
     private Specification<RoleModel> genSpecification(String name) {

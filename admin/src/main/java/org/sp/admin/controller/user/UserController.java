@@ -1,6 +1,7 @@
 package org.sp.admin.controller.user;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.log.StaticLog;
 import jakarta.annotation.Resource;
@@ -11,8 +12,10 @@ import org.sp.admin.enums.StatusEnum;
 import org.sp.admin.model.system.DepartmentModel;
 import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.user.UserModel;
+import org.sp.admin.security.PermissionCacheService;
 import org.sp.admin.security.UserSecurity;
 import org.sp.admin.service.system.DepartmentService;
+import org.sp.admin.service.system.PermissionService;
 import org.sp.admin.service.system.RoleService;
 import org.sp.admin.service.user.UserService;
 import org.sp.admin.utils.BeanConverterUtil;
@@ -56,6 +59,10 @@ public class UserController {
 
     @Resource
     private RoleService roleService;
+
+
+    @Resource
+    private PermissionCacheService permissionCacheService;
 
     private final SecurityUtils securityUtils = new SecurityUtils();
 
@@ -271,6 +278,38 @@ public class UserController {
         return ResponseEntity.ok(ResponseBean.success());
     }
 
+
+    // 获取用户权限
+
+
+    @GetMapping("/codes")
+    public ResponseEntity<?> getUserCodes() {
+
+
+        UserModel currentAdminUser = this.userSecurity.getCurrentAdminUser();
+
+        // 用户角色码
+        List<String> userRoles = this.mUserService.getUserRoles(currentAdminUser);
+
+
+        //
+        List<RoleModel> roleListIn = this.roleService.getRoleListIn(currentAdminUser.getRoles());
+
+
+        Console.log(roleListIn.toString());
+        for (RoleModel roleModel : roleListIn) {
+            List<String> grantedAuthorities = this.permissionCacheService.getGrantedAuthorities(roleModel.getId());
+
+            Console.log("auth:{}",grantedAuthorities.toString());
+
+            userRoles.addAll(grantedAuthorities);
+        }
+
+
+        return ResponseEntity.ok(ResponseBean.success(userRoles));
+
+
+    }
 
 }
 

@@ -22,6 +22,7 @@ import java.util.Date;
 @DynamicInsert // 不然@Column 不起作用
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 @SQLDelete(sql = "update \"role\"  set deleted = true where id = ?")
+//@Where(clause = "deleted != true")
 public class RoleModel implements Serializable {
 
 

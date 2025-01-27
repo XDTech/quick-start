@@ -52,6 +52,8 @@ public class MonitorService {
     private long prevBytesSent = 0;
     private long prevBytesRecv = 0;
 
+    private Map<String, Object> currCpuInfoMap = new HashMap<>();
+
 
     public String formatByte(long bytes) {
         if (bytes < UNIT_THRESHOLD) {
@@ -131,7 +133,7 @@ public class MonitorService {
         long[] ticks = processor.getSystemCpuLoadTicks();
 
 
-        if (prevTicks == null) return null;
+//        if (prevTicks == null) return null;
         long user = ticks[CentralProcessor.TickType.USER.getIndex()] - prevTicks[CentralProcessor.TickType.USER.getIndex()];
         long nice = ticks[CentralProcessor.TickType.NICE.getIndex()] - prevTicks[CentralProcessor.TickType.NICE.getIndex()];
         long sys = ticks[CentralProcessor.TickType.SYSTEM.getIndex()] - prevTicks[CentralProcessor.TickType.SYSTEM.getIndex()];
@@ -158,9 +160,14 @@ public class MonitorService {
         // cpu当前使用率
         map.put("cpuUseRate", RATE_DECIMAL_FORMAT.format(1.0 - (idle * 1.0 / totalCpu)));
 
+        currCpuInfoMap = map;
         return map;
     }
 
+
+    public Map<String, Object> getCurrCpuInfo(){
+        return this.currCpuInfoMap;
+    }
     public Map<String, String> getMemoryInfo() {
         System.out.println("----------------主机内存信息----------------");
 
@@ -293,8 +300,6 @@ public class MonitorService {
             diskInfo.put("available", this.formatByte(fs.getUsableSpace()));
             diskInfo.put("used", this.formatByte(used));
             diskInfo.put("usageRate", RATE_DECIMAL_FORMAT.format(used * 1.0 / fs.getTotalSpace()));
-            Console.log("----");
-            System.out.println(diskInfo);
             list.add(diskInfo);
         }
 

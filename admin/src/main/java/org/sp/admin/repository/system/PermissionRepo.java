@@ -18,4 +18,9 @@ public interface PermissionRepo extends JpaRepository<PermissionModel, Long>, Jp
 
 
     PermissionModel findByIdentity(String identity);
+
+
+    List<PermissionModel> findByIdIn(List<Long> permissionIds);
+
+
 }

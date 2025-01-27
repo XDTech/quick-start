@@ -3,13 +3,16 @@ package org.sp.admin.service.user;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import jakarta.annotation.Resource;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.sp.admin.enums.StatusEnum;
+import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.user.UserModel;
 import org.sp.admin.repository.user.UserRepo;
+import org.sp.admin.service.system.RoleService;
 import org.sp.admin.utils.BaseUtil;
 import org.sp.admin.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,12 @@ public class UserService {
     private UserRepo userRepo;
 
     private final SecurityUtils securityUtils = new SecurityUtils();
+
+
+    @Resource
+    private RoleService roleService;
+
+
     // 查询账户是否存在
 
     public UserModel getUser(String username) {
@@ -112,5 +121,27 @@ public class UserService {
         userModel.setPassword(pwd);
 
         return userModel;
+    }
+
+
+    public List<String> getUserRoles(UserModel userModel) {
+
+        List<String> roleList = new ArrayList<>();
+        if (userModel.getStatus().equals(StatusEnum.locked)) return roleList;
+
+        // 如果是超级管理员账号，默认返回root角色
+
+        if (userModel.getUsername().equals("root")) {
+            roleList.add("root");
+            return roleList;
+        }
+
+
+        List<RoleModel> roles = this.roleService.getRoleListIn(userModel.getRoles());
+
+
+        roleList = roles.stream().map(RoleModel::getIdentity).toList();
+
+        return roleList;
     }
 }

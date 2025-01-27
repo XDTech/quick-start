@@ -1,9 +1,12 @@
 package org.sp.admin.repository.system;
 
 import org.sp.admin.model.system.RoleModel;
+import org.sp.admin.model.system.RolePermissionModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * (Role)
@@ -16,4 +19,11 @@ public interface RoleRepo extends JpaRepository<RoleModel, Long>, JpaSpecificati
 
 
     RoleModel findByIdentity(String identity);
+
+
+    List<RoleModel> findByDeleted(boolean flag);
+
+
+    List<RoleModel> findByIdIn(Long[] roleIds);
+
 }

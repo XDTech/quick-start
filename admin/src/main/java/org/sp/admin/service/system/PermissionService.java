@@ -63,7 +63,7 @@ public class PermissionService {
     }
 
     // 分页查询
-    public Page<PermissionModel> getPermissionPageList(Integer pi, Integer ps,String name) {
+    public Page<PermissionModel> getPermissionPageList(Integer pi, Integer ps, String name) {
         // Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         PageRequest pageRequest = PageRequest.of(pi - 1, ps);
 
@@ -76,6 +76,18 @@ public class PermissionService {
 
         return this.permissionRepo.findAll(this.genSpecification(name));
 
+    }
+
+
+    public List<PermissionModel> getPermissionList(List<Long> permissionIds) {
+
+        return this.permissionRepo.findByIdIn(permissionIds);
+
+    }
+
+
+    public List<PermissionModel> getPermissionListAll(){
+        return this.permissionRepo.findAll();
     }
 
 
