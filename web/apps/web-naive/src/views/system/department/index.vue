@@ -58,7 +58,6 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: 'charge', title: '负责人' },
     { field: 'phone', title: '手机号' },
     { field: 'email', title: '邮箱' },
-    { field: 'sort', title: '排序', slots: { default: 'sort' } },
     { field: 'remarks', title: '备注' },
     {
       field: 'action',

@@ -1,12 +1,13 @@
 package org.sp.admin.security;
 
 import cn.dev33.satoken.stp.StpLogic;
+import org.springframework.stereotype.Component;
+
 
 public class StpKit {
 
 
-
-    public static  final String USER_KEY="user";
+    public static final String USER_KEY = "user";
 
     // 管理租户登录信息
     public static final StpLogic USER = new StpLogic(USER_KEY);

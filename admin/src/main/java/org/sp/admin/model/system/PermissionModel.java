@@ -2,12 +2,10 @@ package org.sp.admin.model.system;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import org.sp.admin.utils.SnowflakeId;
 
 import java.io.Serializable;
@@ -21,6 +19,7 @@ import java.util.Date;
 @DynamicInsert // 不然@Column 不起作用
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 // @see// https://blog.csdn.net/weixin_43272781/article/details/105246784
+//@Where(clause = "deleted != true")
 public class PermissionModel {
 
 

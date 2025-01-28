@@ -31,7 +31,6 @@ import jakarta.annotation.Resource;
  * @since 2025-01-20 10:12:44
  */
 
-@SaCheckRole(value = "root", type = StpKit.USER_KEY)
 @RestController
 @RequestMapping("/permission")
 @Validated  //单参数校验时我们需要，在方法的类上加上@Validated注解，否则校验不生效。
@@ -41,6 +40,8 @@ public class PermissionController {
      */
     @Resource
     private PermissionService permissionService;
+
+
 
     /**
      * 分页查询
@@ -108,6 +109,7 @@ public class PermissionController {
      * @param permissionVal, 实体
      * @return 新增结果
      */
+    @SaCheckRole(value = "root", type = StpKit.USER_KEY)
     @PostMapping
     public ResponseEntity<?> createPermission(@RequestBody @Validated(PermissionVal.Create.class) PermissionVal permissionVal) {
 
@@ -137,6 +139,7 @@ public class PermissionController {
      * @param permissionVal 实体
      * @return 编辑结果
      */
+    @SaCheckRole(value = "root", type = StpKit.USER_KEY)
     @PutMapping
     public ResponseEntity<?> updatePermission(@RequestBody @Validated(PermissionVal.Update.class) PermissionVal permissionVal) {
 
@@ -172,6 +175,7 @@ public class PermissionController {
      * @param id 主键
      * @return 删除是否成功
      */
+    @SaCheckRole(value = "root", type = StpKit.USER_KEY)
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePermissionById(@PathVariable("id") Long id) {
 

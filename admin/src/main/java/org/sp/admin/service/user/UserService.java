@@ -2,6 +2,7 @@ package org.sp.admin.service.user;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.annotation.Resource;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -148,8 +149,45 @@ public class UserService {
 
         //   roleList = roles.stream().map(RoleModel::getIdentity).toList();
 
-       roleList = roles.stream().map(RoleModel::getIdentity).collect(Collectors.toList());
+        roleList = roles.stream().map(RoleModel::getIdentity).collect(Collectors.toList());
 
         return roleList;
+    }
+
+
+    public void createRootAccount() {
+        String accountName = "root";
+
+        RoleModel role = this.roleService.getRole(accountName);
+
+        if (ObjectUtil.isEmpty(role)) {
+            role = new RoleModel();
+
+            role.setName(accountName);
+            role.setIdentity(accountName);
+
+            this.roleService.createRole(role);
+
+        }
+        UserModel root = this.userRepo.findByUsername(accountName);
+
+        if (ObjectUtil.isEmpty(root)) {
+            UserModel userModel = new UserModel();
+
+            userModel.setName(accountName);
+            userModel.setUsername(accountName);
+            // 生成加密盐
+            String salt = this.securityUtils.createSecuritySalt();
+            userModel.setSalt(salt);
+            // 生成密码
+            String pwd = this.securityUtils.shaEncode(accountName + salt);
+
+            userModel.setPassword(pwd);
+            userModel.setRoles(new Long[]{role.getId()});
+
+            this.userRepo.save(userModel);
+
+        }
+
     }
 }

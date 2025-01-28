@@ -1,16 +1,19 @@
 package org.sp.admin.service.system;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import org.sp.admin.model.system.PermissionModel;
 import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.system.RolePermissionModel;
+import org.sp.admin.repository.system.PermissionRepo;
 import org.sp.admin.repository.system.RolePermissionRepo;
 import org.sp.admin.repository.system.RoleRepo;
 import org.sp.admin.utils.BaseUtil;
 import org.sp.admin.validation.system.RoleVal;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.jpa.domain.Specification;
@@ -34,11 +37,22 @@ import jakarta.persistence.criteria.Root;
 @Service
 public class RoleService {
 
+    private final String ROLE_PERMISSION_KEY = "role_permission:";
+
+
+    @Resource
+    private RedisTemplate<String, List<String>> redisTemplate;
+
+    @Resource
+    private PermissionRepo permissionRepo;
+
     @Resource
     private RoleRepo roleRepo;
 
     @Resource
     private RolePermissionRepo rolePermissionRepo;
+
+
 
 
     public List<RolePermissionModel> getRolePermissions(Long roleId) {
@@ -68,6 +82,8 @@ public class RoleService {
         }
 
         this.rolePermissionRepo.saveAll(permissionModels);
+
+        this.genRoleAuth(roleModel);
     }
 
 
@@ -89,6 +105,7 @@ public class RoleService {
 
         this.rolePermissionRepo.saveAll(permissionModels);
 
+        this.genRoleAuth(roleModel);
         return roleModel;
     }
 
@@ -105,6 +122,9 @@ public class RoleService {
 
         // 删除对照表
         this.rolePermissionRepo.deleteByRoleId(roleModel.getId());
+
+        // 删除缓存
+        this.removeRole(roleModel);
     }
 
 //    @Transactional
@@ -125,12 +145,14 @@ public class RoleService {
         return this.roleRepo.findAll(specification, pageRequest);
 
     }
+
     public List<RoleModel> getRoleList(String name) {
 
         Specification<RoleModel> specification = this.genSpecification(name);
         return this.roleRepo.findAll(specification);
 
     }
+
     public List<RoleModel> getRoleListIn(Long[] roleIds) {
 
         return this.roleRepo.findByIdIn(roleIds);
@@ -138,10 +160,10 @@ public class RoleService {
     }
 
 
-    public List<RoleModel> getRoleList(){
+    public List<RoleModel> getRoleList() {
 
         // 查询没有删除的角色
-       return this.roleRepo.findByDeleted(false);
+        return this.roleRepo.findByDeleted(false);
     }
 
 
@@ -176,5 +198,91 @@ public class RoleService {
             return query.getGroupRestriction();
 
         };
+    }
+
+
+
+    // 把所有的角色权限放到缓存里
+    public void genAuthorities() {
+
+
+        List<RoleModel> roleList = this.getRoleList();
+
+        for (RoleModel roleModel : roleList) {
+
+
+            this.genRoleAuth(roleModel);
+
+        }
+
+
+    }
+
+    // 把角色权限放到缓存里
+    public void genRoleAuth(RoleModel roleModel) {
+        if (roleModel.getIdentity().equals("root")) return;
+        // 查询角色权限
+        List<RolePermissionModel> rolePermissions = this.getRolePermissions(roleModel.getId());
+
+        // 放到缓存里
+
+        if (ObjectUtil.isEmpty(rolePermissions)) return;
+
+
+        // 查询权限
+
+        List<Long> permissionIds = rolePermissions.stream().map(RolePermissionModel::getPermissionId).toList();
+
+        List<PermissionModel> permissionModels = this.permissionRepo.findByIdIn(permissionIds);
+
+        List<String> permission = permissionModels.stream().map(PermissionModel::getIdentity).toList();
+
+
+        this.redisTemplate.opsForValue().set(this.genKey(roleModel.getId()), permission);
+    }
+
+
+    // 生成root账户的全部权限
+    public void gentRootAuthorities() {
+
+        List<PermissionModel> permissionListAll = this.permissionRepo.findAllByDeleted(false);
+
+        List<String> identityList = permissionListAll.stream().map(PermissionModel::getIdentity).toList();
+
+
+        // 查询root账户
+        RoleModel root = this.getRole("root");
+
+        if (ObjectUtil.isNotEmpty(root)) {
+            // 生成root账户的权限
+            this.redisTemplate.opsForValue().set(this.genKey(root.getId()), identityList);
+
+        }
+
+
+    }
+
+    public void removeRole(RoleModel root) {
+        this.redisTemplate.delete(this.genKey(root.getId()));
+    }
+
+
+    public List<String> getGrantedAuthorities(Long roleId) {
+
+
+        List<String> authObject = this.redisTemplate.opsForValue().get(this.genKey(roleId));
+
+        if (authObject == null) {
+            return new ArrayList<>();
+        }
+
+        return authObject;
+
+
+    }
+
+
+    public String genKey(Long roleId) {
+        return StrUtil.format("{}{}", this.ROLE_PERMISSION_KEY, roleId);
     }
 }

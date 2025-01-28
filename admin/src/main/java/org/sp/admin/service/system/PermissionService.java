@@ -34,14 +34,27 @@ public class PermissionService {
     private PermissionRepo permissionRepo;
 
 
+    @Resource
+    private RoleService roleService;
+
+
+
+
     @Transactional
     public PermissionModel createPermission(PermissionModel permissionModel) {
-        return this.permissionRepo.save(permissionModel);
+        PermissionModel model = this.permissionRepo.save(permissionModel);
+
+        this.roleService.gentRootAuthorities();
+        return model;
+
     }
 
     @Transactional
     public PermissionModel updatePermission(PermissionModel permissionModel) {
-        return this.permissionRepo.save(permissionModel);
+        PermissionModel model = this.permissionRepo.save(permissionModel);
+
+        this.roleService.gentRootAuthorities();
+        return model;
     }
 
     @Transactional
@@ -55,6 +68,8 @@ public class PermissionService {
         permissionModel.setIdentity(BaseUtil.genDeleteName(permissionModel.getIdentity()));
         permissionModel.setDeleted(true);
         this.permissionRepo.save(permissionModel);
+
+        this.roleService.gentRootAuthorities();
     }
 
 
@@ -64,7 +79,6 @@ public class PermissionService {
 
     // 分页查询
     public Page<PermissionModel> getPermissionPageList(Integer pi, Integer ps, String name) {
-        // Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         PageRequest pageRequest = PageRequest.of(pi - 1, ps);
 
         return this.permissionRepo.findAll(this.genSpecification(name), pageRequest);
@@ -72,7 +86,6 @@ public class PermissionService {
     }
 
     public List<PermissionModel> getPermissionList(String name) {
-        // Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
 
         return this.permissionRepo.findAll(this.genSpecification(name));
 
@@ -86,8 +99,8 @@ public class PermissionService {
     }
 
 
-    public List<PermissionModel> getPermissionListAll(){
-        return this.permissionRepo.findAll();
+    public List<PermissionModel> getPermissionListAll() {
+        return this.permissionRepo.findAllByDeleted(false);
     }
 
 

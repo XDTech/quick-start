@@ -7,7 +7,17 @@ import { defineOverridesPreferences } from '@vben/preferences';
  */
 export const overridesPreferences = defineOverridesPreferences({
   // overrides
+
   app: {
     name: import.meta.env.VITE_APP_TITLE,
+    loginExpiredMode: 'modal',
+  },
+  copyright: {
+    date: 'Vben Admin',
+    companyName: 'Vben Admin22',
+    companySiteLink: 'https://github.com/vbenjs/vben-admin',
+    enable: true,
+    icp: 'ICP 0000000000',
+    icpLink: 'https://beian.miit.gov.cn',
   },
 });

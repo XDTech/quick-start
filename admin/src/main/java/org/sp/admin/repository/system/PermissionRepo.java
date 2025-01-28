@@ -21,6 +21,7 @@ public interface PermissionRepo extends JpaRepository<PermissionModel, Long>, Jp
 
 
     List<PermissionModel> findByIdIn(List<Long> permissionIds);
+    List<PermissionModel> findAllByDeleted(boolean flag);
 
 
 }

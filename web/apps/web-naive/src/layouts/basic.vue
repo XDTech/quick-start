@@ -90,7 +90,7 @@ const menus = computed(() => [
 
 const avatar = computed(() => {
   return userStore.userInfo?.avatar
-    ? `${getBaseUrl}file/download?path=${userStore.userInfo?.avatar}`
+    ? `${getBaseUrl()}file/download?path=${userStore.userInfo?.avatar}`
     : preferences.app.defaultAvatar;
 });
 

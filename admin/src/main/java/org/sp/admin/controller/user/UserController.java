@@ -12,7 +12,7 @@ import org.sp.admin.enums.StatusEnum;
 import org.sp.admin.model.system.DepartmentModel;
 import org.sp.admin.model.system.RoleModel;
 import org.sp.admin.model.user.UserModel;
-import org.sp.admin.security.PermissionCacheService;
+
 import org.sp.admin.security.UserSecurity;
 import org.sp.admin.service.system.DepartmentService;
 import org.sp.admin.service.system.PermissionService;
@@ -59,8 +59,6 @@ public class UserController {
     private RoleService roleService;
 
 
-    @Resource
-    private PermissionCacheService permissionCacheService;
 
     private final SecurityUtils securityUtils = new SecurityUtils();
 
@@ -295,7 +293,7 @@ public class UserController {
 
 
         for (RoleModel roleModel : roleListIn) {
-            List<String> grantedAuthorities = this.permissionCacheService.getGrantedAuthorities(roleModel.getId());
+            List<String> grantedAuthorities = this.roleService.getGrantedAuthorities(roleModel.getId());
 
 
             userRoles.addAll(grantedAuthorities);

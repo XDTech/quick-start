@@ -28,8 +28,7 @@ import java.util.stream.Stream;
 public class PermissionInterfaceImpl implements StpInterface {
 
 
-    @Resource
-    private PermissionCacheService permissionCacheService;
+
 
 
     @Resource
@@ -55,7 +54,7 @@ public class PermissionInterfaceImpl implements StpInterface {
 
         // 3. 遍历角色列表，查询拥有的权限码
         for (String roleId : getUserRole(loginId, loginType)) {
-            List<String> grantedAuthorities = this.permissionCacheService.getGrantedAuthorities(Convert.toLong(roleId));
+            List<String> grantedAuthorities = this.roleService.getGrantedAuthorities(Convert.toLong(roleId));
 
             permissionList.addAll(grantedAuthorities);
         }

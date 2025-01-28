@@ -1,7 +1,8 @@
 package org.sp.admin.component;
 
 import jakarta.annotation.Resource;
-import org.sp.admin.security.PermissionCacheService;
+import org.sp.admin.service.system.RoleService;
+import org.sp.admin.service.user.UserService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -14,17 +15,25 @@ import org.springframework.stereotype.Component;
 public class AppListener {
 
 
+
+
     @Resource
-    private PermissionCacheService permissionCacheService;
+    private UserService userService;
+
+
+    @Resource
+    private RoleService roleService;
 
 
     @EventListener
     public void onApplicationEvent(ApplicationReadyEvent event) {
 
 
-        this.permissionCacheService.genAuthorities();
+        this.userService.createRootAccount();
 
-        this.permissionCacheService.gentRootAuthorities();
+        this.roleService.genAuthorities();
+
+        this.roleService.gentRootAuthorities();
 
 
     }
