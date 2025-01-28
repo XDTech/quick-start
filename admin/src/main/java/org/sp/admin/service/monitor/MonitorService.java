@@ -85,8 +85,8 @@ public class MonitorService {
 
     }
 
-    @Async
-    @Scheduled(fixedRate = 1000)
+    //    @Async
+//    @Scheduled(fixedRate = 1000)
     public void getNetwork() throws InterruptedException {
 
         SystemInfo systemInfo = new SystemInfo();
@@ -165,9 +165,10 @@ public class MonitorService {
     }
 
 
-    public Map<String, Object> getCurrCpuInfo(){
+    public Map<String, Object> getCurrCpuInfo() {
         return this.currCpuInfoMap;
     }
+
     public Map<String, String> getMemoryInfo() {
         System.out.println("----------------主机内存信息----------------");
 
