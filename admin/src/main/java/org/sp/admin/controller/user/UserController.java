@@ -29,9 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -296,11 +294,9 @@ public class UserController {
         List<RoleModel> roleListIn = this.roleService.getRoleListIn(currentAdminUser.getRoles());
 
 
-        Console.log(roleListIn.toString());
         for (RoleModel roleModel : roleListIn) {
             List<String> grantedAuthorities = this.permissionCacheService.getGrantedAuthorities(roleModel.getId());
 
-            Console.log("auth:{}",grantedAuthorities.toString());
 
             userRoles.addAll(grantedAuthorities);
         }

@@ -289,7 +289,6 @@ public class MonitorService {
         OperatingSystem os = si.getOperatingSystem();
         FileSystem fileSystem = os.getFileSystem();
         List<OSFileStore> fileStores = fileSystem.getFileStores();
-        Console.error(fileStores.size());
         List<Map> list = new ArrayList<>();
         for (OSFileStore fs : fileStores) {
 

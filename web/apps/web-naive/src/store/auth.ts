@@ -50,6 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         userInfo = fetchUserInfoResult;
 
+        userInfo.roles = accessCodes;
         userStore.setUserInfo(userInfo);
         accessStore.setAccessCodes(accessCodes);
 

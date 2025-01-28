@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -140,7 +141,14 @@ public class UserService {
         List<RoleModel> roles = this.roleService.getRoleListIn(userModel.getRoles());
 
 
-        roleList = roles.stream().map(RoleModel::getIdentity).toList();
+        /**
+         * toList() 方法在 Java 16 及更高版本中返回的是一个 不可变的列表，
+         * 如果你尝试修改这个列表（例如，调用 add()、remove() 等方法），就会抛出 UnsupportedOperationException 异常。
+         */
+
+        //   roleList = roles.stream().map(RoleModel::getIdentity).toList();
+
+       roleList = roles.stream().map(RoleModel::getIdentity).collect(Collectors.toList());
 
         return roleList;
     }

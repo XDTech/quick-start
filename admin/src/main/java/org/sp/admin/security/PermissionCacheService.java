@@ -45,7 +45,7 @@ public class PermissionCacheService {
     private PermissionService permissionService;
 
     @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, List<String>> redisTemplate;
 
     @Resource
     private UserService userService;
@@ -110,14 +110,14 @@ public class PermissionCacheService {
 
         List<String> authList = new ArrayList<>();
 
-        Object authObject = this.redisTemplate.opsForValue().get(this.genKey(roleId));
+        List<String> authObject = this.redisTemplate.opsForValue().get(this.genKey(roleId));
         Console.log(authObject);
 
         if (authObject == null) {
             return authList;
         }
 
-        return (List<String>) authObject;
+        return authObject;
 
 
     }
