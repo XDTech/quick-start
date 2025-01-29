@@ -14,7 +14,7 @@ export const overridesPreferences = defineOverridesPreferences({
   },
   copyright: {
     date: 'Vben Admin',
-    companyName: 'Vben Admin22',
+    companyName: 'Vben Admin',
     companySiteLink: 'https://github.com/vbenjs/vben-admin',
     enable: true,
     icp: 'ICP 0000000000',

@@ -195,12 +195,11 @@ public class MonitorService {
     }
 
     public Map<String, String> getSysInfo() {
+        System.out.println("----------------操作系统信息----------------");
 
         HashMap<String, String> map = new HashMap<>();
-        System.out.println("----------------操作系统信息----------------");
         Properties props = System.getProperties();
 
-        log.info(props.toString());
         //系统名称
         String osName = props.getProperty("os.name");
         map.put("osName", osName);
@@ -211,7 +210,6 @@ public class MonitorService {
 
         SystemInfo si = new SystemInfo();
         OperatingSystem os = si.getOperatingSystem();
-        System.out.println("系统信息 = " + os.toString());
 
         map.put("osInfo", os.toString());
 
@@ -219,9 +217,9 @@ public class MonitorService {
     }
 
     public Map<String, String> getJvmInfo() {
+        System.out.println("----------------jvm信息----------------");
 
         Map<String, String> map = new HashMap<>();
-        System.out.println("----------------jvm信息----------------");
         Properties props = System.getProperties();
         Runtime runtime = Runtime.getRuntime();
 
