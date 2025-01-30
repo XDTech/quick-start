@@ -1,0 +1,3 @@
+https://doc.vben.pro/guide/in-depth/access.html
+
+这也是一个使用vitepress的文档网站，可以参考一下，把权限内容爬取下来 写到一个文档中
