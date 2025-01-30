@@ -1,5 +1,11 @@
 # 欢迎使用 Quick Start
 
+## 写在前面
+
+欢迎来到 Quick Start 项目文档。本项目采用 Vben 作为前端项目开发。具体的使用以及部署可以参考 [Vben 官方文档](https://doc.vben.pro/guide/introduction/quick-start.html)。本文档仅列出部分配置，旨在帮助您快速上手。
+
+---
+
 ## 介绍
 
 Quick Start 是一个快速开发文档的工具，旨在帮助开发者快速搭建和运行项目。
@@ -16,26 +22,12 @@ Quick Start 是一个快速开发文档的工具，旨在帮助开发者快速�
 ## 后端技术
 
 - **Spring Boot 3**：现代化的 Java 后端框架，提供快速开发和部署的能力。
+- **PostgreSQL**：强大的关系型数据库，支持复杂查询和事务处理。
+- **Redis**：高性能的键值存储，常用于缓存和会话管理。
+- **分布式锁**：确保在分布式系统中资源的安全访问。
+- **Java 17+**：使用最新的 Java 版本，提供更好的性能和新特性。
+- **SA Token 权限认证**：提供简单易用的权限管理机制，确保系统的安全性和灵活性。详细信息请参考 [SA Token 官方文档](https://sa-token.cc/doc.html#/use/login-auth)。
 
-## 开始使用
+---
 
-1. 安装依赖：
-   ```sh
-   pnpm install 
-   ```
-
-2. 使用 Spring Boot 3 创建后端服务：
-
-   - 创建一个新的 Spring Boot 项目：
-     ```sh
-     spring init --dependencies=web my-springboot-app
-     cd my-springboot-app
-     ```
-
-   - 运行 Spring Boot 应用：
-     ```sh
-     ./mvnw spring-boot:run
-     ```
-
-   - 访问应用：
-     打开浏览器并访问 `http://localhost:8080`。 
+通过以上技术栈，Quick Start 项目能够为开发者提供一个高效、稳定的开发环境，助力快速实现业务需求。

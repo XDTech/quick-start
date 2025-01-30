@@ -98,6 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
+  // 用户信息以及权限码
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
     userInfo = await getUserInfoApi();

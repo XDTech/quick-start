@@ -15,26 +15,25 @@ export default defineConfig({
       {
         text: "指南",
         items: [
-          { text: "介绍", link: "/quick-start" },
-          { text: "配置", link: "/quick-start/config" },
-          { text: "插件", link: "/plugins" },
-          { text: "部署", link: "/deploy" },
+          { text: "项目概览", link: "/quick-start" },
+          { text: "构建与部署", link: "/deployment-guide" },
         ],
       },
       {
         text: "前端使用",
         items: [
-          { text: "项目概览", link: "/project-overview" },
-          { text: "权限", link: "/permission" },
+     
+          { text: "快速开始", link: "/vue/operation" },
+          { text: "权限", link: "/vue/permission" },
           // 可以在这里添加更多的前端相关链接
         ],
       },
       {
         text: "后端使用",
         items: [
-          { text: "Lombok", link: "/lombok" },
-          { text: "EasyCode", link: "/code-generate" },
-          { text: "项目概览", link: "/backend-project-overview" },
+          { text: "Lombok", link: "/springboot/lombok" },
+          { text: "EasyCode", link: "/springboot/code-generate" }
+       
           // 可以在这里添加更多的后端相关链接
         ],
       },

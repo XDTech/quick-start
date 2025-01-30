@@ -46,9 +46,15 @@
    可查看应用下的 `src/store/auth`，找到下面代码：
 
    ```ts
-   // 设置登录用户信息，需要确保 userInfo.roles 是一个数组，且包含路由表中的权限
-   // 例如：userInfo.roles=['super', 'admin']
-   authStore.setUserInfo(userInfo);
+  // 用户信息以及权限码
+  async function fetchUserInfo() {
+    let userInfo: null | UserInfo = null;
+    userInfo = await getUserInfoApi();
+    const accessCodes = await getAccessCodesApi();
+    userInfo.roles = accessCodes;
+    userStore.setUserInfo(userInfo);
+    return userInfo;
+  }
    ```
 
    到这里，就已经配置完成，你需要确保登录后，接口返回的角色和路由表的权限匹配，否则无法访问。
@@ -65,45 +71,6 @@
 },
 ```
 
-## 后端访问控制
-
-**实现原理**: 是通过接口动态生成路由表，且遵循一定的数据结构返回。前端根据需要处理该数据为可识别的结构，再通过 `router.addRoute` 添加到路由实例，实现权限的动态生成。
-
-**缺点**: 后端需要提供符合规范的数据结构，前端需要处理数据结构，适合权限较为复杂的系统。
-
-### 步骤
-
-1. **确保当前模式为后端访问控制模式**
-
-   调整对应应用目录下的 `preferences.ts`，确保 `accessMode='backend'`。
-
-   ```ts
-   import { defineOverridesPreferences } from '@vben/preferences';
-
-   export const overridesPreferences = defineOverridesPreferences({
-     // overrides
-     app: {
-       accessMode: 'backend',
-     },
-   });
-   ```
-
-2. **确保接口返回的菜单数据结构正确**
-
-   可查看应用下的 `src/router/access.ts`，找到下面代码：
-
-   ```ts
-   async function generateAccess(options: GenerateMenuAndRoutesOptions) {
-     return await generateAccessible(preferences.app.accessMode, {
-       fetchMenuListAsync: async () => {
-         // 这个接口为后端返回的菜单数据
-         return await getAllMenus();
-       },
-     });
-   }
-   ```
-
-   接口返回菜单数据，可看注释说明。到这里，就已经配置完成，你需要确保登录后，接口返回的菜单格式正确，否则无法访问。
 
 ## 按钮细粒度控制
 
@@ -114,14 +81,15 @@
 权限码为接口返回的权限码，通过权限码来判断按钮是否显示，逻辑在 `src/store/auth` 下：
 
 ```ts
-const [fetchUserInfoResult, accessCodes] = await Promise.all([
-  fetchUserInfo(),
-  getAccessCodes(),
-]);
-
-userInfo = fetchUserInfoResult;
-authStore.setUserInfo(userInfo);
-accessStore.setAccessCodes(accessCodes);
+  // 用户信息以及权限码
+  async function fetchUserInfo() {
+    let userInfo: null | UserInfo = null;
+    userInfo = await getUserInfoApi();
+    const accessCodes = await getAccessCodesApi();
+    userInfo.roles = accessCodes;
+    userStore.setUserInfo(userInfo);
+    return userInfo;
+  }
 ```
 
 找到 `getAccessCodes` 对应的接口，可根据业务逻辑进行调整。
