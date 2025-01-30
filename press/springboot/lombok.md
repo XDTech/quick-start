@@ -8,7 +8,7 @@
 2. 搜索 `Lombok`。
 3. 点击安装按钮。
 
-![Lombok 插件安装](img.png)
+![Lombok 插件安装](/assets/img.png)
 
 ## 2. 开启配置
 
@@ -17,7 +17,7 @@
 - **Enable annotation processing**: 确保注解处理已启用。
 - **Enable Lombok plugin**: 确保 Lombok 插件已启用。
 
-![Lombok 配置开启](img_1.png)
+![Lombok 配置开启](/assets/img_1.png)
 
 ---
 
