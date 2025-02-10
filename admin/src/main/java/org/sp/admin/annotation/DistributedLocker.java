@@ -28,5 +28,10 @@ public @interface DistributedLocker {
      * @return
      */
     String lockOnParameter();
+    int maxRetryCount() default 3; // 最大重试次数
+
+    int retryIntervalMs() default 1000; // 重试间隔（毫秒）
+
+    boolean enableRetry() default true;  // 是否启用重试机制
 
 }

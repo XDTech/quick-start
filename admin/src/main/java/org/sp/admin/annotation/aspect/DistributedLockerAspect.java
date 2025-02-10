@@ -37,9 +37,7 @@ public class DistributedLockerAspect {
         // 通过反射获取自定义注解对象
         DistributedLocker distributedLocker = methodSignature.getMethod().getAnnotation(DistributedLocker.class);
 
-
         String parameter = distributedLocker.lockOnParameter();
-
         String value = this.getParameterInString(joinPoint, parameter);
 
         String className = methodSignature.getDeclaringTypeName();  // 获取目标类的全类名
@@ -47,18 +45,46 @@ public class DistributedLockerAspect {
 
         String lockKey = StrUtil.format("{}_{}_{}", className, methodName, value);
 
-
         RLock rLock = this.redisson.getLock(lockKey);
 
+        int maxRetryCount = distributedLocker.maxRetryCount();  // 最大重试次数
+        int retryIntervalMs = distributedLocker.retryIntervalMs();  // 重试间隔
+        boolean enableRetry = distributedLocker.enableRetry();  // 是否启用重试机制
+
+        int attempt = 0;
+        boolean gotLock = false;
+
         try {
-            boolean gotLocker = rLock.tryLock(); // 加锁失败返回false
+            // 如果启用了重试机制，则执行重试逻辑
+            if (enableRetry) {
+                while (attempt < maxRetryCount) {
+                    gotLock = rLock.tryLock(); // 尝试获取锁并设置过期时间
 
-            if (!gotLocker) return ResponseBean.fail("请等会再试！");
+                    if (gotLock) {
+                        break;  // 成功获取锁，退出循环
+                    }
+
+                    attempt++;  // 增加尝试次数
+                    if (attempt < maxRetryCount) {
+                        Thread.sleep(retryIntervalMs);  // 等待重试
+                    }
+                }
+            } else {
+                // 如果没有启用重试机制，直接尝试一次获取锁
+                gotLock = rLock.tryLock();
+            }
+
+            if (!gotLock) {
+                return ResponseBean.fail("请等会再试！");
+            }
+
             joinPoint.proceed();
-
             return ResponseBean.success();
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // 如果线程被中断，则恢复中断状态
+            return ResponseBean.fail("操作中断，请稍后再试！");
         } catch (RuntimeException e) {
-            // e.printStackTrace();
             throw new RuntimeException(e.getLocalizedMessage());
         } catch (Throwable e) {
             return ResponseBean.fail("请等会再试！");
