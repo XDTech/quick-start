@@ -78,8 +78,8 @@ public class DistributedLockerAspect {
                 return ResponseBean.fail("请等会再试！");
             }
 
-            joinPoint.proceed();
-            return ResponseBean.success();
+            Object proceed = joinPoint.proceed();// 执行目标方法得到返回结果
+            return (ResponseBean) proceed;// 转换 返回
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // 如果线程被中断，则恢复中断状态
