@@ -54,14 +54,16 @@ public class GlobalException extends Exception {
     // 未登录异常
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(NotLoginException.class)
+    @ResponseBody
     public String handleNotLoginExceptions(NotLoginException ex) {
-        return "";
+        return ex.getMessage();
     }
 
     /**
      * 通用异常处理(用于处理不可预知的异常)
      */
     @ExceptionHandler(Exception.class)
+    @ResponseBody
     public ResponseEntity<?> exceptionHandler(Exception ex) {
         ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Network error");
